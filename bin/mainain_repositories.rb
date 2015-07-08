@@ -15,6 +15,7 @@ OPTIONS = {
   :host => ENV["DOCKER_HOST"],
   :namespace => ENV["DOCKER_NAMESPACE"],
   :keep => Integer(ENV.fetch("DOCKER_KEEP", 10)),
+  :sort => false,
   :ssl => true,
   :kill => false
 }
@@ -67,7 +68,13 @@ def manage_repos!
   LOGGER.info("Managing tags in %d repositories from %s/%s" % [repos.size, OPTIONS[:clean_url], OPTIONS[:namespace]])
 
   repos.each do |repository|
-    tags = repository.tags.sort_by{|t| t.name}
+    if OPTIONS[:sort]
+      LOGGER.warn("Sorting repositories based on name")
+      tags = repository.tags.sort_by{|t| t.name}
+    else
+      tags = repository.tags
+    end
+
     if tags.size > OPTIONS[:keep]
       delete_count = tags.size - OPTIONS[:keep]
       delete_targets = tags[0...delete_count]
@@ -78,7 +85,7 @@ def manage_repos!
 
       delete_targets.each do |tag|
         if tag.name != "latest"
-          if OPTIIONS[:kill]
+          if OPTIONS[:kill]
             LOGGER.info("Removing %s:%s" % [repository.name, tag.name])
             registry.delete_reporitory_tag(tag)
           else
@@ -135,6 +142,10 @@ def parse_options
     OPTIONS[:kill] = true
   end
 
+  opt.on("--sort", "Sort the tags by tag name") do |v|
+    OPTIONS[:sort] = v
+  end
+
   opt.parse!
 end
 
@@ -145,4 +156,5 @@ if !(OPTIONS[:user] && OPTIONS[:pass])
 end
 
 check_options!
+
 manage_repos!
