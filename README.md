@@ -19,6 +19,13 @@ It supports reading ```~/.dockercfg``` and environment variables
 ```DOCKER_USER```, ```DOCKER_PASS```, ```DOCKER_HOST```,
 ```DOCKER_KEEP``` and ```DOCKER_NAMESPACE```
 
+Running?
+--------
+
+```
+docker run -ti --rm quay.io/ripienaar/docker_registry_maintainer --help
+```
+
 Contact?
 ========
 
