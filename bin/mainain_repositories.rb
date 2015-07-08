@@ -44,7 +44,7 @@ def check_options!
     v.nil? ? k : nil
   end.compact
 
-  abort("Please specify a value for settings: %s" % needed.join(", ")) unless needed.empty?
+  abort("Please specify a value for settings: %s. Run with --help for details" % needed.join(", ")) unless needed.empty?
 
   OPTIONS[:url], OPTIONS[:clean_url] = repo_url
 end
