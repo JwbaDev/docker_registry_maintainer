@@ -17,10 +17,12 @@ OPTIONS = {
   :keep => Integer(ENV.fetch("DOCKER_KEEP", 10)),
   :sort => false,
   :ssl => true,
-  :kill => false
+  :kill => false,
+  :debug => false
 }
 
 LOGGER = Logger.new(STDOUT)
+LOGGER.level = Logger::INFO
 
 # @return [Array<String, String>] the url and a url with obfuscated password
 def repo_url
@@ -144,6 +146,10 @@ def parse_options
 
   opt.on("--sort", "Sort the tags by tag name") do |v|
     OPTIONS[:sort] = v
+  end
+
+  opt.on("--debug", "Enable debug logs") do
+    LOGGER.level = Logger::DEBUG
   end
 
   opt.parse!
